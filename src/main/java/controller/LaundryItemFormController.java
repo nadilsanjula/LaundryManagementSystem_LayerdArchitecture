@@ -1,14 +1,16 @@
 package controller;
 
 import bo.BOFactory;
+import bo.custom.CustomerBO;
 import bo.custom.ItemBO;
+import bo.custom.LaundryItemBO;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
-import dao.custom.ItemDAO;
+import dao.DAOFactory;
+import dao.custom.LaundryItemDAO;
 import dto.ItemDTO;
 import dto.LaundryItemDTO;
-import dto.tm.ItemTM;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,7 +18,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import dao.custom.impl.ItemDAOImpl;
-import dao.custom.LaundryItemModel;
+import dao.custom.impl.LaundryItemDAOImpl;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -39,6 +41,7 @@ public class LaundryItemFormController {
     ObservableList<LaundryItemDTO> observableList = FXCollections.observableArrayList();
     private ItemDAOImpl itemDAOImpl = new ItemDAOImpl();
     ItemBO itemBO = (ItemBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.ITEM);
+    LaundryItemBO laundryItemBO = (LaundryItemBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.LAUNDRY_ITEM);
 
 
 
@@ -53,7 +56,7 @@ public class LaundryItemFormController {
             double unitPrice = Double.parseDouble(txtUnitPrice.getText());
             String itemId = (String) comItemId.getValue();
             try {
-                boolean isSaved = LaundryItemModel.save(new LaundryItemDTO(laundryItemId, name, qtyAvailble, desc, unitPrice, itemId));
+                boolean isSaved = laundryItemBO.saveLaundryItem(new LaundryItemDTO(laundryItemId, name, qtyAvailble, desc, unitPrice, itemId));
 
 
                 if (isSaved) {
@@ -101,7 +104,7 @@ public class LaundryItemFormController {
 
             boolean isUpdated = false;
             try {
-                isUpdated = LaundryItemModel.update(new LaundryItemDTO(laundryItemId, name, qtyAvailble, desc, unitPrice, itemId));
+                isUpdated = laundryItemBO.updateLaundryItem(new LaundryItemDTO(laundryItemId, name, qtyAvailble, desc, unitPrice, itemId));
                 if (isUpdated) {
                     new Alert(Alert.AlertType.CONFIRMATION, "Updated successfully").show();
                     txtLaundryItemId.setText("");
@@ -125,7 +128,7 @@ public class LaundryItemFormController {
         String laundryItemId = txtLaundryItemId.getText();
 
         try {
-            boolean isRemoved = LaundryItemModel.remove(laundryItemId);
+            boolean isRemoved = laundryItemBO.removeLaundryItem(laundryItemId);
 
             if (isRemoved) {
                 new Alert(Alert.AlertType.CONFIRMATION, "Deleted successfully").show();
@@ -155,7 +158,7 @@ public class LaundryItemFormController {
         String laundryItemId = txtLaundryItemId.getText();
 
         try {
-            LaundryItemDTO laundryItemDTO= LaundryItemModel.search(laundryItemId);
+            LaundryItemDTO laundryItemDTO= laundryItemBO.searchLaundryItem(laundryItemId);
 
             if (laundryItemDTO != null) {
                 txtLaundryItemId.setText(laundryItemDTO.getLaundryItemId());

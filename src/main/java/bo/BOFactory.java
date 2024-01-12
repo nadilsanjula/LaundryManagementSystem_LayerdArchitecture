@@ -1,7 +1,7 @@
 package bo;
 
-import bo.custom.impl.CustomerBOImpl;
-import bo.custom.impl.ItemBOImpl;
+import bo.custom.LaundryItemBO;
+import bo.custom.impl.*;
 import dao.custom.impl.CustomerDAOImpl;
 import dao.custom.impl.ItemDAOImpl;
 
@@ -27,26 +27,26 @@ public class BOFactory {
             case ITEM:
                 return new ItemBOImpl();
 
-            /*case LAUNDRY_EQUIPMENT:
-                return new LaundryEquipmentModel();
+            case LAUNDRY_EQUIPMENT:
+                return new LaundryItemBOImpl();
 
             case LAUNDRY_ITEM:
-                return new LaundryItemModel();
+                return new LaundryItemBOImpl();
 
-            case ORDER:
-                return new OrderModel();
+            //case ORDER:
+              //  return new OrderModel();
 
             case PAYMENT:
-                return new PaymentModel();
+                return new PaymentBOImpl();
 
-            case PLACE_ORDER:
-                return new PlaceOrderModel();
+          //  case PLACE_ORDER:
+            //    return new PlaceOrderModel();
 
             case STAFF:
-                return new StaffModel();
+                return new StaffBOImpl();
 
             case SUPPLIER:
-                return new SupplierModel();*/
+                return new SupplierBOImpl();
 
             default:
                 return null;

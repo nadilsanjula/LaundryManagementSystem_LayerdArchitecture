@@ -2,13 +2,14 @@ package bo.custom.impl;
 
 import bo.custom.ItemBO;
 import dao.DAOFactory;
-import dao.custom.CustomerDAO;
 import dao.custom.ItemDAO;
-import dto.CustomerDTO;
+import db.DBConnection;
 import dto.ItemDTO;
-import entity.Customer;
+import dto.tm.CartTM;
 import entity.Item;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,8 @@ public class ItemBOImpl implements ItemBO {
 
     @Override
     public ItemDTO searchItem(String id) throws SQLException {
-        return null;
+        Item item = itemDAO.search(id);
+        return new ItemDTO(item.getItemId(),item.getName(),item.getDescription(),item.getQty(),item.getUnitPrice(),item.getOrderId());
     }
 
     @Override
@@ -45,6 +47,28 @@ public class ItemBOImpl implements ItemBO {
 
         }
         return itemDTOS;
+    }
+
+    public boolean updateItem(List<CartTM> cartTmList) throws SQLException {
+        for(CartTM tm : cartTmList) {
+            System.out.println("Item: " + tm);
+            if(!updateQty(tm.getItemId(), tm.getQty())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean updateQty(String code, int qty) throws SQLException {
+        Connection connection = DBConnection.getInstance().getConnection();
+
+        String sql = "UPDATE item SET quantity = quantity - ? WHERE ItemId = ?";
+        PreparedStatement pstm = connection.prepareStatement(sql);
+
+        pstm.setInt(1, qty);
+        pstm.setString(2, code);
+
+        return pstm.executeUpdate() > 0; //false
     }
 
 }

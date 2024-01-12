@@ -1,7 +1,6 @@
 package controller;
 
 import bo.BOFactory;
-import bo.custom.CustomerBO;
 import bo.custom.ItemBO;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -15,8 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
-import dao.custom.impl.ItemDAOImpl;
-import dao.custom.OrderModel;
+import dao.custom.impl.OrderDAOImpl;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -35,7 +33,7 @@ public class ItemFormController {
     public AnchorPane itemPane;
     public JFXComboBox cmbOrderId;
 
-    private OrderModel orderModel = new OrderModel();
+    private OrderDAOImpl orderDAOImpl = new OrderDAOImpl();
     ObservableList<ItemDTO> observableList = FXCollections.observableArrayList();
     ItemBO itemBO = (ItemBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.ITEM);
 
@@ -157,7 +155,7 @@ public class ItemFormController {
         String orderId = (String) cmbOrderId.getValue();
 
         try {
-            OrderDTO orderDTO = orderModel.search(orderId);
+            OrderDTO orderDTO = orderDAOImpl.search(orderId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -167,7 +165,7 @@ public class ItemFormController {
     private void loadOrderId() {
         ObservableList<String> obList = FXCollections.observableArrayList();
         try {
-            List<OrderTM> orderTMS = orderModel.getAll();
+            List<OrderTM> orderTMS = orderDAOImpl.getAll();
 
             for (OrderTM dto : orderTMS) {
                 obList.add(dto.getOrderId());

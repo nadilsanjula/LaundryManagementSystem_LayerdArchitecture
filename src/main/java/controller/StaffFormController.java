@@ -1,5 +1,8 @@
 package controller;
 
+import bo.BOFactory;
+import bo.custom.CustomerBO;
+import bo.custom.StaffBO;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import dto.StaffDTO;
@@ -9,7 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
-import dao.custom.StaffModel;
+import dao.custom.impl.StaffDAOImpl;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -28,6 +31,7 @@ public class StaffFormController {
     public JFXButton btnView;
 
     ObservableList<StaffDTO> observableList = FXCollections.observableArrayList();
+    StaffBO staffBO = (StaffBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.STAFF);
 
     public void btnSaveOnAction(ActionEvent actionEvent) {
         boolean isValead = validateStaff();
@@ -40,7 +44,7 @@ public class StaffFormController {
             String jobRole = txtRole.getText();
 
             try {
-                boolean isSaved = StaffModel.save(new StaffDTO(staffId, name, email, num, jobRole));
+                boolean isSaved = staffBO.saveStaff(new StaffDTO(staffId, name, email, num, jobRole));
 
 
                 if (isSaved) {
@@ -87,7 +91,7 @@ public class StaffFormController {
 
             boolean isUpdated = false;
             try {
-                isUpdated = StaffModel.update(new StaffDTO(staffId, name, email, num, jobRole));
+                isUpdated = staffBO.updateStaff(new StaffDTO(staffId, name, email, num, jobRole));
                 if (isUpdated) {
                     new Alert(Alert.AlertType.CONFIRMATION, "Updated successfully").show();
                     txtStaffId.setText("");
@@ -110,7 +114,7 @@ public class StaffFormController {
         String staffId = txtStaffId.getText();
 
         try {
-            boolean isRemoved = StaffModel.remove(staffId);
+            boolean isRemoved = staffBO.removeStaff(staffId);
 
             if (isRemoved) {
                 new Alert(Alert.AlertType.CONFIRMATION, "Deleted successfully").show();
@@ -139,7 +143,7 @@ public class StaffFormController {
         String staffId = txtStaffId.getText();
 
         try {
-            StaffDTO staffDTO= StaffModel.search(staffId);
+            StaffDTO staffDTO= staffBO.searchStaff(staffId);
 
             if (staffDTO != null) {
                 txtStaffId.setText(staffDTO.getStaffId());

@@ -1,6 +1,7 @@
-package dao.custom;
+package dao.custom.impl;
 
 import dao.custom.impl.ItemDAOImpl;
+import dao.custom.impl.OrderDAOImpl;
 import db.DBConnection;
 import dto.PlaceOrderDTO;
 
@@ -8,8 +9,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-public class PlaceOrderModel {
-    private OrderModel orderModel = new OrderModel();
+public class PlaceOrderDAOImpl {
+    private OrderDAOImpl orderDAOImpl = new OrderDAOImpl();
     private ItemDAOImpl itemDAOImpl = new ItemDAOImpl();
 
     public boolean placeOrder(PlaceOrderDTO placeOrderDto) throws SQLException {
@@ -28,7 +29,7 @@ public class PlaceOrderModel {
             connection = DBConnection.getInstance().getConnection();
             connection.setAutoCommit(false);
 
-            boolean isOrderSaved = orderModel.save(orderId,pickupDate,deliverDate,amount, customerId,staffId );
+            boolean isOrderSaved = orderDAOImpl.save(orderId,pickupDate,deliverDate,amount, customerId,staffId );
             if (isOrderSaved) {
                 boolean isUpdated = itemDAOImpl.updateItem(placeOrderDto.getCartTmList());
                 if (isUpdated) {

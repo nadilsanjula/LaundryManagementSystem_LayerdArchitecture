@@ -3,7 +3,7 @@ package controller;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import dao.custom.impl.CustomerDAOImpl;
-import dao.custom.SupplierModel;
+import dao.custom.impl.SupplierDAOImpl;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,7 +13,7 @@ public class HomeFormController implements Initializable {
     public Label lblSupplierCount;
 
     CustomerDAOImpl cusModel = new CustomerDAOImpl();
-    SupplierModel suppModel = new SupplierModel();
+    SupplierDAOImpl suppModel = new SupplierDAOImpl();
 
     public void CustomerCountOnAction() {
         /*try {

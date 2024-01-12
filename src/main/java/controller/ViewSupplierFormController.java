@@ -1,6 +1,9 @@
 package controller;
 
+import bo.BOFactory;
+import bo.custom.SupplierBO;
 import com.jfoenix.controls.JFXButton;
+import dto.SupplierDTO;
 import dto.tm.SupplierTM;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,7 +14,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import dao.custom.SupplierModel;
+import dao.custom.impl.SupplierDAOImpl;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,6 +23,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class ViewSupplierFormController implements Initializable {
+
+    SupplierBO supplierBO = (SupplierBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.SUPPLIER);
     public AnchorPane viewSupplierPane;
     public TableView<SupplierTM> tblSupplier;
     public TableColumn colSupplierId;
@@ -52,9 +57,9 @@ public class ViewSupplierFormController implements Initializable {
 
     private void getAll() {
         try {
-            List<SupplierTM> supplierTMS = SupplierModel.getAll();
+            List<SupplierDTO> supplierTMS = supplierBO.getAllSupplier();
             ObservableList<SupplierTM> list = FXCollections.observableArrayList();
-            for (SupplierTM supplierTM :supplierTMS){
+            for (SupplierDTO supplierTM :supplierTMS){
                 list.add(
                         new SupplierTM(
                                 supplierTM.getSupplierId(),

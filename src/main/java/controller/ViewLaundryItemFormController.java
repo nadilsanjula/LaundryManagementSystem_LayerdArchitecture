@@ -1,7 +1,10 @@
 package controller;
 
+import bo.BOFactory;
+import bo.custom.LaundryItemBO;
 import com.jfoenix.controls.JFXButton;
-import dto.tm.LaundryItemTM;
+import dto.LaundryItemDTO;
+import entity.LaundryItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,7 +14,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import dao.custom.LaundryItemModel;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,7 +24,7 @@ import java.util.ResourceBundle;
 public class ViewLaundryItemFormController implements Initializable {
 
     public AnchorPane viewLaundryItemPane;
-    public TableView <LaundryItemTM> tblLaundryItem;
+    public TableView<LaundryItem> tblLaundryItem;
     public TableColumn colLaundryItemID;
     public TableColumn colName;
     public TableColumn colQtyAvailable;
@@ -31,6 +33,7 @@ public class ViewLaundryItemFormController implements Initializable {
     public TableColumn colItemId;
     public JFXButton btnBack;
 
+    LaundryItemBO laundryItemBO = (LaundryItemBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.LAUNDRY_ITEM);
     public void btnBackOnAction(ActionEvent actionEvent) throws IOException {
         AnchorPane load = FXMLLoader.load(getClass().getResource("/view/laundryItemForm.fxml"));
         viewLaundryItemPane.getChildren().clear();
@@ -39,11 +42,11 @@ public class ViewLaundryItemFormController implements Initializable {
 
     private void getAll() {
         try {
-            List<LaundryItemTM> laundryItemTMS = LaundryItemModel.getAll();
-            ObservableList<LaundryItemTM> list = FXCollections.observableArrayList();
-            for (LaundryItemTM laundryItemTM :laundryItemTMS){
+            List<LaundryItemDTO> laundryItemTMS = laundryItemBO.getAllLaundryItem();
+            ObservableList<LaundryItem> list = FXCollections.observableArrayList();
+            for (LaundryItemDTO laundryItemTM :laundryItemTMS){
                 list.add(
-                        new LaundryItemTM(
+                        new LaundryItem(
                             laundryItemTM.getLaundryItemId(),
                                 laundryItemTM.getName(),
                                 laundryItemTM.getQtyAvailable(),

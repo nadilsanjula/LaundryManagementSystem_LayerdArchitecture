@@ -1,6 +1,9 @@
 package controller;
 
+import bo.BOFactory;
+import bo.custom.StaffBO;
 import com.jfoenix.controls.JFXButton;
+import dto.StaffDTO;
 import dto.tm.StaffTM;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,7 +14,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import dao.custom.StaffModel;
+import dao.custom.impl.StaffDAOImpl;
 
 import java.io.IOException;
 import java.net.URL;
@@ -29,11 +32,13 @@ public class ViewStaffFormController implements Initializable {
     public TableColumn colJobRole;
     public JFXButton btnBack;
 
+    StaffBO staffBO = (StaffBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.STAFF);
+
     private void getAll() {
         try {
-            List<StaffTM> staffTMS = StaffModel.getAll();
+            List<StaffDTO> staffTMS = staffBO.getAllStaff();
             ObservableList<StaffTM> list = FXCollections.observableArrayList();
-            for (StaffTM staffTM :staffTMS){
+            for (StaffDTO staffTM :staffTMS){
                 list.add(
                         new StaffTM(
                                 staffTM.getStaffId(),

@@ -1,8 +1,7 @@
 package dao;
 
 import dao.custom.*;
-import dao.custom.impl.CustomerDAOImpl;
-import dao.custom.impl.ItemDAOImpl;
+import dao.custom.impl.*;
 
 public class DAOFactory {
     private static DAOFactory daoFactory;
@@ -27,26 +26,26 @@ public class DAOFactory {
             case ITEM:
                 return new ItemDAOImpl();
 
-            /*case LAUNDRY_EQUIPMENT:
-                return new LaundryEquipmentModel();
+            case LAUNDRY_EQUIPMENT:
+                return new LaundryEquipmentDAOImpl();
 
             case LAUNDRY_ITEM:
-                return new LaundryItemModel();
+                return new LaundryItemDAOImpl();
 
-            case ORDER:
-                return new OrderModel();
+            //case ORDER:
+              //  return new OrderModel();
 
             case PAYMENT:
-                return new PaymentModel();
+                return new PaymentDAOImpl();
 
-            case PLACE_ORDER:
-                return new PlaceOrderModel();
+           // case PLACE_ORDER:
+           //     return new PlaceOrderModel();
 
             case STAFF:
-                return new StaffModel();
+                return new StaffDAOImpl();
 
             case SUPPLIER:
-                return new SupplierModel();*/
+                return new SupplierDAOImpl();
 
             default:
                 return null;

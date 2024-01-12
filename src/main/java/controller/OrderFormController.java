@@ -2,6 +2,7 @@ package controller;
 
 import bo.BOFactory;
 import bo.custom.CustomerBO;
+import bo.custom.StaffBO;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
@@ -9,9 +10,8 @@ import com.jfoenix.controls.JFXTextField;
 import dto.CustomerDTO;
 import dto.OrderDTO;
 import dto.StaffDTO;
-import dto.tm.CustomerTM;
-import dto.tm.StaffTM;
 import entity.Customer;
+import entity.Staff;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,8 +19,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import dao.custom.impl.CustomerDAOImpl;
-import dao.custom.OrderModel;
-import dao.custom.StaffModel;
+import dao.custom.impl.OrderDAOImpl;
+import dao.custom.impl.StaffDAOImpl;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -43,9 +43,9 @@ public class OrderFormController {
     public JFXButton btnplaceOrder;
 
     private CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
-    private StaffModel staffModel = new StaffModel();
+    private StaffDAOImpl staffDAOImpl = new StaffDAOImpl();
     ObservableList<OrderDTO> observableList = FXCollections.observableArrayList();
-
+    StaffBO staffBO = (StaffBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.STAFF);
     CustomerBO customerBO = (CustomerBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.CUSTOMER);
 
 
@@ -61,7 +61,7 @@ public class OrderFormController {
 
 
         try {
-            boolean isSaved = OrderModel.save(new OrderDTO(orderId, pickupDate, deliveryDate,amount, customerId,staffId));
+            boolean isSaved = OrderDAOImpl.save(new OrderDTO(orderId, pickupDate, deliveryDate,amount, customerId,staffId));
 
 
             if (isSaved) {
@@ -95,7 +95,7 @@ public class OrderFormController {
 
         boolean isUpdated = false;
         try {
-            isUpdated = OrderModel.update(new OrderDTO(orderId,pickupDate,deliveryDate,amount,customerId,staffId));
+            isUpdated = OrderDAOImpl.update(new OrderDTO(orderId,pickupDate,deliveryDate,amount,customerId,staffId));
             if (isUpdated) {
                 new Alert(Alert.AlertType.CONFIRMATION, "Updated successfully").show();
                 txtOrderId.setText("");
@@ -118,7 +118,7 @@ public class OrderFormController {
         String orderId = txtOrderId.getText();
 
         try {
-            boolean isRemoved = OrderModel.remove(orderId);
+            boolean isRemoved = OrderDAOImpl.remove(orderId);
 
             if (isRemoved) {
                 new Alert(Alert.AlertType.CONFIRMATION, "Deleted successfully").show();
@@ -177,7 +177,7 @@ public class OrderFormController {
         String staffId = (String) comStaffId.getValue();
 
         try {
-            StaffDTO staffDTO = StaffModel.search(staffId);
+            StaffDTO staffDTO = staffBO.searchStaff(staffId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -186,9 +186,9 @@ public class OrderFormController {
     private void loadStaffId() {
         ObservableList<String> obList = FXCollections.observableArrayList();
         try {
-            List<StaffTM> staffTMS = staffModel.getAll();
+            List<Staff> staffTMS = staffDAOImpl.getAll();
 
-            for (StaffTM dto : staffTMS) {
+            for (Staff dto : staffTMS) {
                 obList.add(dto.getStaffId());
             }
             comStaffId.setItems(obList);
@@ -201,7 +201,7 @@ public class OrderFormController {
         String orderId = txtOrderId.getText();
 
         try {
-            OrderDTO orderDTO= OrderModel.search(orderId);
+            OrderDTO orderDTO= OrderDAOImpl.search(orderId);
 
             if (orderDTO != null) {
                 txtOrderId.setText(orderDTO.getOrderId());

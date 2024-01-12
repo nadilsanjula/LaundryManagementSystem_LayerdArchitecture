@@ -1,5 +1,7 @@
 package controller;
 
+import bo.BOFactory;
+import bo.custom.PaymentBO;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
@@ -13,8 +15,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
-import dao.custom.OrderModel;
-import dao.custom.PaymentModel;
+import dao.custom.impl.OrderDAOImpl;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -32,8 +33,11 @@ public class PaymentFormController {
     public JFXDatePicker paymentDate;
     public JFXComboBox cmbOrderId;
 
-    private OrderModel orderModel = new OrderModel();
+    private OrderDAOImpl orderDAOImpl = new OrderDAOImpl();
     ObservableList<PaymentDTO> observableList = FXCollections.observableArrayList();
+
+    PaymentBO paymentBO = (PaymentBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.PAYMENT);
+
     public void btnSaveOnAction(ActionEvent actionEvent) {
         String paymentId = txtPaymentId.getText();
         double amount = Double.parseDouble(txtAmount.getText());
@@ -42,7 +46,7 @@ public class PaymentFormController {
 
 
         try {
-            boolean isSaved = PaymentModel.save(new PaymentDTO(paymentId, amount, date,orderId));
+            boolean isSaved = paymentBO.savePayment(new PaymentDTO(paymentId, amount, date,orderId));
 
 
             if (isSaved) {
@@ -72,7 +76,7 @@ public class PaymentFormController {
 
         boolean isUpdated = false;
         try {
-            isUpdated = PaymentModel.update(new PaymentDTO(paymentId, amount, date,orderId));
+            isUpdated = paymentBO.updatePayment(new PaymentDTO(paymentId, amount, date,orderId));
             if (isUpdated) {
                 new Alert(Alert.AlertType.CONFIRMATION, "Updated successfully").show();
                 txtPaymentId.setText("");
@@ -93,7 +97,7 @@ public class PaymentFormController {
         String paymentId = txtPaymentId.getText();
 
         try {
-            boolean isRemoved = PaymentModel.remove(paymentId);
+            boolean isRemoved = paymentBO.removePayment(paymentId);
 
             if (isRemoved) {
                 new Alert(Alert.AlertType.CONFIRMATION, "Deleted successfully").show();
@@ -121,7 +125,7 @@ public class PaymentFormController {
         String paymentId = txtPaymentId.getText();
 
         try {
-            PaymentDTO paymentDTO = PaymentModel.search(paymentId);
+            PaymentDTO paymentDTO = paymentBO.searchPayment(paymentId);
 
             if (paymentDTO != null) {
                 txtPaymentId.setText(paymentDTO.getPaymentId());
@@ -141,7 +145,7 @@ public class PaymentFormController {
         String orderId = (String) cmbOrderId.getValue();
 
         try {
-            OrderDTO orderDTO = OrderModel.search(orderId);
+            OrderDTO orderDTO = OrderDAOImpl.search(orderId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -150,7 +154,7 @@ public class PaymentFormController {
     private void loadOrderId() {
         ObservableList<String> obList = FXCollections.observableArrayList();
         try {
-            List<OrderTM> orderTMS = orderModel.getAll();
+            List<OrderTM> orderTMS = orderDAOImpl.getAll();
 
             for (OrderTM dto : orderTMS) {
                 obList.add(dto.getOrderId());

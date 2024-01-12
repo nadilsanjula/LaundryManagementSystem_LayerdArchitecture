@@ -1,4 +1,4 @@
-package dao.custom;
+package dao.custom.impl;
 
 import db.DBConnection;
 import dto.OrderDTO;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderModel {
+public class OrderDAOImpl {
     public static boolean save(OrderDTO orderDTO)throws SQLException {
         String sql = "INSERT INTO orders(orderId,pickupDate,deliverDate,amount,customerID,staffId) VALUES(?,?,?,?,?,?)";
         boolean isSaved = SQLUtil.execute(sql, orderDTO.getOrderId(),orderDTO.getPickupDate(),orderDTO.getDeliveryDate(),orderDTO.getAmount(),orderDTO.getCustomerId(),orderDTO.getStaffid());

@@ -1,7 +1,9 @@
 package controller;
 
+import bo.BOFactory;
+import bo.custom.LaundryEquipmentBO;
 import com.jfoenix.controls.JFXButton;
-import dto.tm.LaundryEquipmentTM;
+import dto.LaundryEquipmentDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,7 +13,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import dao.custom.LaundryEquipmentModel;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,8 +21,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class ViewLaundryEquipmentFormController implements Initializable {
+
+    LaundryEquipmentBO laundryEquipmentBO = (LaundryEquipmentBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.LAUNDRY_EQUIPMENT);
     public AnchorPane viewLaundryEquipmentPane;
-    public TableView<LaundryEquipmentTM> tblLaundryEquipment;
+    public TableView<LaundryEquipmentDTO> tblLaundryEquipment;
 
     public JFXButton btnBack;
     public TableColumn colMachineId;
@@ -37,11 +40,11 @@ public class ViewLaundryEquipmentFormController implements Initializable {
 
     private void getAll() {
         try {
-            List<LaundryEquipmentTM> laundryEquipmentTMS = LaundryEquipmentModel.getAll();
-            ObservableList<LaundryEquipmentTM> list = FXCollections.observableArrayList();
-            for (LaundryEquipmentTM laundryEquipmentTM :laundryEquipmentTMS){
+            List<LaundryEquipmentDTO> laundryEquipmentTMS = laundryEquipmentBO.getAllLaundryEquipment();
+            ObservableList<LaundryEquipmentDTO> list = FXCollections.observableArrayList();
+            for (LaundryEquipmentDTO laundryEquipmentTM :laundryEquipmentTMS){
                 list.add(
-                        new LaundryEquipmentTM(
+                        new LaundryEquipmentDTO(
                                 laundryEquipmentTM.getMachineId(),
                                 laundryEquipmentTM.getMachineType(),
                                 laundryEquipmentTM.getStatus(),

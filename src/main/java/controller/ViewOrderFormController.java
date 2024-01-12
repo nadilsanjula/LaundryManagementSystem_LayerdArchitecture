@@ -10,7 +10,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import dao.custom.OrderModel;
+import dao.custom.impl.OrderDAOImpl;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,7 +32,7 @@ public class ViewOrderFormController implements Initializable {
 
     private void getAll() {
         try {
-            List<OrderTM> orderTMList = OrderModel.getAll();
+            List<OrderTM> orderTMList = OrderDAOImpl.getAll();
             ObservableList<OrderTM> list = FXCollections.observableArrayList();
             for (OrderTM orderTM :orderTMList){
                 list.add(

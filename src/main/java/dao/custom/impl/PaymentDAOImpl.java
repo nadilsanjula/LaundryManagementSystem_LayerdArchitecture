@@ -1,33 +1,44 @@
-package dao.custom;
+package dao.custom.impl;
 
+import dao.custom.PaymentDAO;
 import dto.PaymentDTO;
 import dto.tm.PaymentTM;
 import dao.SQLUtil;
+import entity.Payment;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaymentModel {
-    public static boolean save(PaymentDTO paymentDTO) throws SQLException {
+public class PaymentDAOImpl implements PaymentDAO {
+    @Override
+    public boolean save(Payment dto) throws SQLException {
         String sql = "INSERT INTO payment(paymentId,amount,paymentDate,orderId) VALUES(?,?,?,?)";
-        boolean isSaved = SQLUtil.execute(sql, paymentDTO.getPaymentId(),paymentDTO.getAmount(),paymentDTO.getPaymentDate(),paymentDTO.getOrderId());
+        boolean isSaved = SQLUtil.execute(sql, dto.getPaymentId(),dto.getAmount(),dto.getPaymentDate(),dto.getOrderId());
         return isSaved;
     }
 
-    public static boolean update(PaymentDTO paymentDTO) throws SQLException {
+    @Override
+    public boolean update(Payment dto) throws SQLException {
         String sql = "UPDATE payment set amount=?,paymentDate =?,orderId=? where paymentId=?";
-        return SQLUtil.execute(sql, paymentDTO.getAmount(),paymentDTO.getPaymentDate(),paymentDTO.getOrderId(),paymentDTO.getPaymentId());
+        return SQLUtil.execute(sql, dto.getAmount(),dto.getPaymentDate(),dto.getOrderId(),dto.getPaymentId());
     }
 
-    public static PaymentDTO search(String paymentId) throws SQLException {
+    @Override
+    public boolean remove(String id) throws SQLException {
+        String sql = "DELETE FROM payment WHERE paymentId = ?";
+        return SQLUtil.execute(sql,id);
+    }
+
+    @Override
+    public Payment search(String id) throws SQLException {
         String sql = "SELECT * FROM payment where paymentId = ?";
 
-        ResultSet resultSet = SQLUtil.execute(sql, paymentId);
+        ResultSet resultSet = SQLUtil.execute(sql, id);
 
         if (resultSet.next()){
-            PaymentDTO paymentDTO= new PaymentDTO();
+            Payment paymentDTO= new Payment();
             paymentDTO.setPaymentId(resultSet.getString(1));
             paymentDTO.setAmount(resultSet.getDouble(2));
             paymentDTO.setPaymentDate(resultSet.getDate(3).toLocalDate());
@@ -38,17 +49,13 @@ public class PaymentModel {
         return null;
     }
 
-    public static boolean remove(String paymentId) throws SQLException {
-        String sql = "DELETE FROM payment WHERE paymentId = ?";
-        return SQLUtil.execute(sql,paymentId);
-    }
-
-    public static List<PaymentTM> getAll() throws SQLException {
+    @Override
+    public List<Payment> getAll() throws SQLException {
         String sql = "SELECT * FROM payment";
         ResultSet resultSet = SQLUtil.execute(sql);
-        List<PaymentTM> data = new ArrayList<>();
+        List<Payment> data = new ArrayList<>();
         while (resultSet.next()) {
-            PaymentTM paymentTM = new PaymentTM(
+            Payment paymentTM = new Payment(
                     resultSet.getString(1),
                     resultSet.getDouble(2),
                     resultSet.getDate(3).toLocalDate(),
@@ -58,4 +65,5 @@ public class PaymentModel {
         }
         return data;
     }
+
 }

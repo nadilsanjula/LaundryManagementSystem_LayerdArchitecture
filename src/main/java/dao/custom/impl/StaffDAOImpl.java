@@ -1,33 +1,44 @@
-package dao.custom;
+package dao.custom.impl;
 
+import dao.custom.StaffDAO;
 import dto.StaffDTO;
 import dto.tm.StaffTM;
 import dao.SQLUtil;
+import entity.Staff;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StaffModel {
-    public static boolean save(StaffDTO staffDTO) throws SQLException {
+public class StaffDAOImpl implements StaffDAO {
+    @Override
+    public boolean save(Staff dto) throws SQLException {
         String sql = "INSERT INTO staff(staffId,name,email,telNum,role) VALUES(?,?,?,?,?)";
-        boolean isSaved = SQLUtil.execute(sql, staffDTO.getStaffId(),staffDTO.getName(),staffDTO.getEmail(),staffDTO.getTelNum(),staffDTO.getJobRole());
+        boolean isSaved = SQLUtil.execute(sql, dto.getStaffId(),dto.getName(),dto.getEmail(),dto.getTelNum(),dto.getJobRole());
         return isSaved;
     }
 
-    public static boolean update(StaffDTO staffDTO) throws SQLException {
+    @Override
+    public boolean update(Staff dto) throws SQLException {
         String sql = "UPDATE staff set name=?,email=?,telNum=?,role=? WHERE staffId = ?";
-        return SQLUtil.execute(sql,staffDTO.getName(),staffDTO.getEmail(),staffDTO.getTelNum(),staffDTO.getJobRole(),staffDTO.getStaffId());
+        return SQLUtil.execute(sql,dto.getName(),dto.getEmail(),dto.getTelNum(),dto.getJobRole(),dto.getStaffId());
     }
 
-    public static StaffDTO search(String staffId) throws SQLException {
+    @Override
+    public boolean remove(String id) throws SQLException {
+        String sql = "DELETE FROM staff WHERE staffId = ?";
+        return SQLUtil.execute(sql,id);
+    }
+
+    @Override
+    public Staff search(String id) throws SQLException {
         String sql = "SELECT * FROM staff where staffId = ?";
 
-        ResultSet resultSet = SQLUtil.execute(sql, staffId);
+        ResultSet resultSet = SQLUtil.execute(sql, id);
 
         if (resultSet.next()){
-            StaffDTO staffDTO= new StaffDTO();
+            Staff staffDTO= new Staff();
             staffDTO.setStaffId(resultSet.getString(1));
             staffDTO.setName(resultSet.getString(2));
             staffDTO.setEmail(resultSet.getString(3));
@@ -39,17 +50,13 @@ public class StaffModel {
         return null;
     }
 
-    public static boolean remove(String staffId) throws SQLException {
-        String sql = "DELETE FROM staff WHERE staffId = ?";
-        return SQLUtil.execute(sql,staffId);
-    }
-
-    public static List<StaffTM> getAll() throws SQLException {
+    @Override
+    public List<Staff> getAll() throws SQLException {
         String sql = "SELECT * FROM staff";
         ResultSet resultSet = SQLUtil.execute(sql);
-        List<StaffTM> data = new ArrayList<>();
+        List<Staff> data = new ArrayList<>();
         while (resultSet.next()) {
-            StaffTM staffTM = new StaffTM(
+            Staff staffTM = new Staff(
                     resultSet.getString(1),
                     resultSet.getString(2),
                     resultSet.getString(3),
@@ -61,4 +68,5 @@ public class StaffModel {
         }
         return data;
     }
+
 }

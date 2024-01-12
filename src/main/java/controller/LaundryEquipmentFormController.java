@@ -1,5 +1,8 @@
 package controller;
 
+import bo.BOFactory;
+import bo.custom.CustomerBO;
+import bo.custom.LaundryEquipmentBO;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
@@ -10,7 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
-import dao.custom.LaundryEquipmentModel;
+import dao.custom.impl.LaundryEquipmentDAOImpl;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -28,12 +31,13 @@ public class LaundryEquipmentFormController {
     public JFXDatePicker dateRepair;
 
     ObservableList<LaundryEquipmentDTO> observableList = FXCollections.observableArrayList();
+    LaundryEquipmentBO laundryEquipmentBO = (LaundryEquipmentBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.LAUNDRY_EQUIPMENT);
 
     public void IdSearchOnAction(ActionEvent actionEvent) {
         String machineId = txtMachineId.getText();
 
         try {
-            LaundryEquipmentDTO laundryEquipmentDTO= LaundryEquipmentModel.search(machineId);
+            LaundryEquipmentDTO laundryEquipmentDTO= laundryEquipmentBO.searchLaundryEquipment(machineId);
 
             if (laundryEquipmentDTO != null) {
                 txtMachineId.setText(laundryEquipmentDTO.getMachineId());
@@ -58,7 +62,7 @@ public class LaundryEquipmentFormController {
 
 
         try {
-            boolean isSaved = LaundryEquipmentModel.save(new LaundryEquipmentDTO(machineId, machineType, status, repairDate));
+            boolean isSaved = laundryEquipmentBO.saveLaundryEquipment(new LaundryEquipmentDTO(machineId, machineType, status, repairDate));
 
 
             if (isSaved) {
@@ -88,7 +92,7 @@ public class LaundryEquipmentFormController {
 
         boolean isUpdated = false;
         try {
-            isUpdated = LaundryEquipmentModel.update(new LaundryEquipmentDTO(machineId, machineType, status, repairDate));
+            isUpdated = laundryEquipmentBO.updateLaundryEquipment(new LaundryEquipmentDTO(machineId, machineType, status, repairDate));
             if (isUpdated) {
                 new Alert(Alert.AlertType.CONFIRMATION, "Updated successfully").show();
                 txtMachineId.setText("");
@@ -109,7 +113,7 @@ public class LaundryEquipmentFormController {
         String machineId = txtMachineId.getText();
 
         try {
-            boolean isRemoved = LaundryEquipmentModel.remove(machineId);
+            boolean isRemoved = laundryEquipmentBO.removeLaundryEquipment(machineId);
 
             if (isRemoved) {
                 new Alert(Alert.AlertType.CONFIRMATION, "Deleted successfully").show();

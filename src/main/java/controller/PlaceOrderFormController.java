@@ -3,6 +3,7 @@ package controller;
 import bo.BOFactory;
 import bo.custom.CustomerBO;
 import bo.custom.ItemBO;
+import bo.custom.StaffBO;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -12,18 +13,16 @@ import com.google.zxing.common.BitMatrix;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
-import dao.custom.*;
 import dao.custom.impl.CustomerDAOImpl;
-import dao.custom.impl.ItemDAOImpl;
+import dao.custom.impl.OrderDAOImpl;
+import dao.custom.impl.PlaceOrderDAOImpl;
+import dao.custom.impl.StaffDAOImpl;
 import db.DBConnection;
 import dto.CustomerDTO;
 import dto.ItemDTO;
 import dto.PlaceOrderDTO;
 import dto.StaffDTO;
 import dto.tm.CartTM;
-import dto.tm.CustomerTM;
-import dto.tm.ItemTM;
-import dto.tm.StaffTM;
 import entity.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -74,11 +73,11 @@ public class PlaceOrderFormController implements Initializable {
     public JFXComboBox cmbStaffId;
 
     private CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
-    private StaffModel staffModel = new StaffModel();
+    private StaffDAOImpl staffDAOImpl = new StaffDAOImpl();
     private ObservableList<CartTM> obList = FXCollections.observableArrayList();
-    private PlaceOrderModel placeOrderModel = new PlaceOrderModel();
+    private PlaceOrderDAOImpl placeOrderDAOImpl = new PlaceOrderDAOImpl();
 
-    private ItemDAOImpl itemDAOImpl = new ItemDAOImpl();
+    StaffBO staffBO = (StaffBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.STAFF);
 
     CustomerBO customerBO = (CustomerBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.CUSTOMER);
     ItemBO itemBO = (ItemBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.ITEM);
@@ -164,7 +163,7 @@ public class PlaceOrderFormController implements Initializable {
         System.out.println("Place order form controller: " + cartTMList);
         var placeOrderDto = new PlaceOrderDTO(orderId, pickupDate,deliverDate,amount, customerId,staffId, cartTMList);
         try {
-            boolean isSuccess = placeOrderModel.placeOrder(placeOrderDto);
+            boolean isSuccess = placeOrderDAOImpl.placeOrder(placeOrderDto);
             if (isSuccess) {
                 new Alert(Alert.AlertType.CONFIRMATION, "Order Success!").show();
             }
@@ -342,7 +341,7 @@ public class PlaceOrderFormController implements Initializable {
 
     private void generateNextOrderId() {
         try {
-            String orderId = OrderModel.generateNextOrderId();
+            String orderId = OrderDAOImpl.generateNextOrderId();
             lblOrderId.setText(orderId);
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
@@ -404,7 +403,7 @@ public class PlaceOrderFormController implements Initializable {
 
         txtQty.requestFocus();
         try {
-            StaffDTO dto = StaffModel.search(staffdId);
+            StaffDTO dto = staffBO.searchStaff(staffdId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -413,9 +412,9 @@ public class PlaceOrderFormController implements Initializable {
     private void loadStaffId() {
         ObservableList<String> obList = FXCollections.observableArrayList();
         try {
-            List<StaffTM> staffTMS = staffModel.getAll();
+            List<StaffDTO> staffTMS = staffBO.getAllStaff();
 
-            for (StaffTM dto : staffTMS) {
+            for (StaffDTO dto : staffTMS) {
                 obList.add(dto.getStaffId());
             }
             cmbStaffId.setItems(obList);

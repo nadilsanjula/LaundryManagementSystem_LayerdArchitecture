@@ -1,38 +1,44 @@
-package dao.custom;
+package dao.custom.impl;
 
+import dao.custom.LaundryEquipmentDAO;
 import dto.LaundryEquipmentDTO;
 import dto.tm.LaundryEquipmentTM;
 import dao.SQLUtil;
+import entity.LaundryEquipment;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LaundryEquipmentModel {
-    public static boolean save(LaundryEquipmentDTO laundryEquipmentDTO) throws SQLException {
+public class LaundryEquipmentDAOImpl implements LaundryEquipmentDAO {
+    @Override
+    public boolean save(LaundryEquipment dto) throws SQLException {
         String sql = "INSERT INTO laundryEquipment(machineId,machineType,status,nextRepairDate) VALUES(?,?,?,?)";
-        boolean isSaved = SQLUtil.execute(sql, laundryEquipmentDTO.getMachineId(),laundryEquipmentDTO.getMachineType(),laundryEquipmentDTO.getStatus(),laundryEquipmentDTO.getNextRepairDate());
+        boolean isSaved = SQLUtil.execute(sql, dto.getMachineId(),dto.getMachineType(),dto.getStatus(),dto.getNextRepairDate());
         return isSaved;
     }
 
-    public static boolean update(LaundryEquipmentDTO laundryEquipmentDTO) throws SQLException {
+    @Override
+    public boolean update(LaundryEquipment dto) throws SQLException {
         String sql = "UPDATE laundryEquipment set machineType=?,status=?,nextRepairDate=? WHERE machineId = ?";
-        return SQLUtil.execute(sql,laundryEquipmentDTO.getMachineType(),laundryEquipmentDTO.getStatus(),laundryEquipmentDTO.getNextRepairDate(),laundryEquipmentDTO.getMachineId());
+        return SQLUtil.execute(sql,dto.getMachineType(),dto.getStatus(),dto.getNextRepairDate(),dto.getMachineId());
     }
 
-    public static boolean remove(String machineId) throws SQLException {
+    @Override
+    public boolean remove(String id) throws SQLException {
         String sql = "DELETE FROM laundryEquipment WHERE machineId = ?";
-        return SQLUtil.execute(sql,machineId);
+        return SQLUtil.execute(sql,id);
     }
 
-    public static LaundryEquipmentDTO search(String machineId) throws SQLException {
+    @Override
+    public LaundryEquipment search(String id) throws SQLException {
         String sql = "SELECT * FROM laundryEquipment where machineId = ?";
 
-        ResultSet resultSet = SQLUtil.execute(sql, machineId);
+        ResultSet resultSet = SQLUtil.execute(sql, id);
 
         if (resultSet.next()){
-            LaundryEquipmentDTO laundryEquipmentDTO= new LaundryEquipmentDTO();
+            LaundryEquipment laundryEquipmentDTO= new LaundryEquipment();
             laundryEquipmentDTO.setMachineId(resultSet.getString(1));
             laundryEquipmentDTO.setMachineType(resultSet.getString(2));
             laundryEquipmentDTO.setStatus(resultSet.getString(3));
@@ -43,20 +49,22 @@ public class LaundryEquipmentModel {
         return null;
     }
 
-    public static List<LaundryEquipmentTM> getAll() throws SQLException {
+    @Override
+    public List<LaundryEquipment> getAll() throws SQLException {
         String sql = "SELECT * FROM laundryEquipment";
         ResultSet resultSet = SQLUtil.execute(sql);
-        List<LaundryEquipmentTM> data = new ArrayList<>();
+        List<LaundryEquipment> data = new ArrayList<>();
         while (resultSet.next()) {
-            LaundryEquipmentTM laundryEquipmentTM = new LaundryEquipmentTM(
+            LaundryEquipment laundryEquipmentTM = new LaundryEquipment(
                     resultSet.getString(1),
                     resultSet.getString(2),
                     resultSet.getString(3),
-                    resultSet.getDate(4)
+                    resultSet.getDate(4).toLocalDate()
 
             );
             data.add(laundryEquipmentTM);
         }
         return data;
     }
+
 }

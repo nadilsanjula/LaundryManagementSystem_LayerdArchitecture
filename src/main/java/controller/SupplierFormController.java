@@ -1,5 +1,8 @@
 package controller;
 
+import bo.BOFactory;
+import bo.custom.StaffBO;
+import bo.custom.SupplierBO;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import dto.SupplierDTO;
@@ -9,7 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
-import dao.custom.SupplierModel;
+import dao.custom.impl.SupplierDAOImpl;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -28,11 +31,12 @@ public class SupplierFormController {
     public JFXTextField txtName;
 
     ObservableList<SupplierDTO> observableList = FXCollections.observableArrayList();
+    SupplierBO supplierBO = (SupplierBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.SUPPLIER);
     public void idSearchOnAction(ActionEvent actionEvent) {
         String supplierId = txtSupplierId.getText();
 
         try {
-            SupplierDTO supplierDTO= SupplierModel.search(supplierId);
+            SupplierDTO supplierDTO= supplierBO.searchSupplier(supplierId);
 
             if (supplierDTO != null) {
                 txtSupplierId.setText(supplierDTO.getSupplierId());
@@ -60,7 +64,7 @@ public class SupplierFormController {
             String address = txtAddress.getText();
 
             try {
-                boolean isSaved = SupplierModel.save(new SupplierDTO(supplierId, name, email, telNum, address));
+                boolean isSaved = supplierBO.saveSupplier(new SupplierDTO(supplierId, name, email, telNum, address));
 
 
                 if (isSaved) {
@@ -106,7 +110,7 @@ public class SupplierFormController {
 
             boolean isUpdated = false;
             try {
-                isUpdated = SupplierModel.update(new SupplierDTO(supplierId, name, email, telNum, address));
+                isUpdated = supplierBO.updateSupplier(new SupplierDTO(supplierId, name, email, telNum, address));
                 if (isUpdated) {
                     new Alert(Alert.AlertType.CONFIRMATION, "Updated successfully").show();
                     txtSupplierId.setText("");
@@ -129,7 +133,7 @@ public class SupplierFormController {
         String supplierId = txtSupplierId.getText();
 
         try {
-            boolean isRemoved = SupplierModel.remove(supplierId);
+            boolean isRemoved = supplierBO.removeSupplier(supplierId);
 
             if (isRemoved) {
                 new Alert(Alert.AlertType.CONFIRMATION, "Deleted successfully").show();

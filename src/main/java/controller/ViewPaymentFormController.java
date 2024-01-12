@@ -1,6 +1,9 @@
 package controller;
 
+import bo.BOFactory;
+import bo.custom.PaymentBO;
 import com.jfoenix.controls.JFXButton;
+import dto.PaymentDTO;
 import dto.tm.PaymentTM;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,7 +14,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import dao.custom.PaymentModel;
+import dao.custom.impl.PaymentDAOImpl;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,6 +31,8 @@ public class ViewPaymentFormController implements Initializable {
     public TableView tblPayment;
     public TableColumn colAmount;
 
+    PaymentBO paymentBO = (PaymentBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.PAYMENT);
+
     public void btnBackOnAction(ActionEvent actionEvent) throws IOException {
         AnchorPane load = FXMLLoader.load(getClass().getResource("/view/paymentForm.fxml"));
         viewPaymentPane.getChildren().clear();
@@ -36,9 +41,9 @@ public class ViewPaymentFormController implements Initializable {
 
     private void getAll() {
         try {
-            List<PaymentTM> paymentTMS = PaymentModel.getAll();
+            List<PaymentDTO> paymentTMS = paymentBO.getAllPayment();
             ObservableList<PaymentTM> list = FXCollections.observableArrayList();
-            for (PaymentTM paymentTM : paymentTMS) {
+            for (PaymentDTO paymentTM : paymentTMS) {
                 list.add(
                         new PaymentTM(
                                 paymentTM.getPaymentId(),
