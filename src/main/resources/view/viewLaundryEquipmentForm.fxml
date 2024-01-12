@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="viewLaundryEquipmentPane" prefHeight="783.0" prefWidth="1433.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ViewLaundryEquipmentFormController">
+    <children>
+        <TableView fx:id="tblLaundryEquipment" layoutX="130.0" layoutY="156.0" prefHeight="531.0" prefWidth="1171.0">
+            <columns>
+                <TableColumn fx:id="colMachineId" prefWidth="158.00003051757812" text="Mechine ID" />
+                <TableColumn fx:id="colType" prefWidth="309.0" text="Machine Type" />
+                <TableColumn fx:id="colStatus" prefWidth="434.0" text="Current Status" />
+                <TableColumn fx:id="colRepairDate" prefWidth="268.0" text="Next Repair Date" />
+            </columns>
+        </TableView>
+        <JFXButton fx:id="btnBack" layoutX="46.0" layoutY="702.0" onAction="#btnBackOnAction" prefHeight="50.0" prefWidth="169.0" style="-fx-background-radius: 10;-fx-background-color: rgba(217, 217, 217, 0.2);-fx-border-width: 3; -fx-border-radius: 10; -fx-border-color: black;" text="Back" textFill="WHITE">
+            <font>
+                <Font size="25.0" />
+            </font>
+        </JFXButton>
+    </children>
+</AnchorPane>
